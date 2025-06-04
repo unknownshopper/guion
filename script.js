@@ -16,7 +16,49 @@ function showSeason(seasonNumber) {
     });
 }
 
+// Función para aplicar el efecto de resaltado de letras
+function setupLetterHighlighting() {
+    const elements = document.querySelectorAll('.ep01');
+    
+    elements.forEach(element => {
+        // Solo procesar si no se ha procesado antes
+        if (element.dataset.processed !== 'true') {
+            const text = element.textContent;
+            let html = '';
+            
+            // Crear un span para cada letra
+            for (let i = 0; i < text.length; i++) {
+                const char = text[i];
+                // Si es un espacio, mantenerlo como está
+                if (char === ' ') {
+                    html += ' ';
+                } else {
+                    html += `<span class="letter" style="--delay: ${i * 0.05}s">${char}</span>`;
+                }
+            }
+            
+            // Reemplazar el contenido con los spans
+            element.innerHTML = html;
+            element.dataset.processed = 'true';
+        }
+    });
+}
+
+// Inicializar cuando el DOM esté listo
 document.addEventListener('DOMContentLoaded', function() {
+    setupLetterHighlighting();
+    
+    // Reiniciar la animación al hacer clic
+    document.addEventListener('click', function() {
+        const letters = document.querySelectorAll('.letter');
+        letters.forEach(letter => {
+            // Reiniciar la animación
+            letter.style.animation = 'none';
+            void letter.offsetHeight; // Forzar reflow
+            letter.style.animation = '';
+        });
+    });
+    
     const seasonSelect = document.getElementById('temporada');
     const episodesList = document.getElementById('episodios-lista');
     
