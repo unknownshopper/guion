@@ -11,8 +11,8 @@
         <nav>
             <ul>
                 <li><a href="#">Episodios</a></li>
-                <li><a href="/guion/us.html">Acerca</a></li>
-                <li><a href="/guion/contacto.html">Contacto</a></li>
+                <li><a href="us.html">Acerca</a></li>
+                <li><a href="contacto.html">Contacto</a></li>
             </ul>
         </nav>
     </header>
@@ -31,25 +31,61 @@
                 </select>
             </div>
             
-            <ul class="episodios">
-                <li>
-                    <a href="gui1.html">Amoarolá ep1</a>
+            <ul class="episodios" id="episodios-lista">
+                <!-- Temporada 1 -->
+                <li data-season="1">
+                    <a href="gui1.html">Amoarolá ep1 <br> "En Producción"</a>
                     <br> <a href="gui1.html" class="guion">Guión</a>
                 </li>
-                <li>
-                    <a href="gui2.html">Banqueteando ep2</a>
+                <li data-season="1">
+                    <a href="gui2.html">Banqueteando ep2 <br> "En Producción"</a>
                     <br> <a href="gui2.html" class="guion">Guión</a>
                 </li>
-                <li>
-                    <a href="gui3.html">Jaula ep3</a>
+                <li data-season="1">
+                    <a href="gui3.html">Jaula ep3 <br> "En Producción"</a>
                     <br> <a href="gui3.html" class="guion">Guión</a>
+                </li>
+                
+                <!-- Temporada 2 -->
+                <li data-season="2">
+                    <a href="#" class="proximamente">Episodio 4 - Próximamente</a>
+                    <br> <span class="guion">Próximamente</span>
+                </li>
+                <li data-season="2">
+                    <a href="#" class="proximamente">Episodio 5 - Próximamente</a>
+                    <br> <span class="guion">Próximamente</span>
+                </li>
+                <li data-season="2">
+                    <a href="#" class="proximamente">Episodio 6 - Próximamente</a>
+                    <br> <span class="guion">Próximamente</span>
+                </li>
+                
+                <!-- Temporada 3 -->
+                <li data-season="3">
+                    <a href="#" class="proximamente">Episodio 7 - Próximamente</a>
+                    <br> <span class="guion">Próximamente</span>
+                </li>
+                <li data-season="3">
+                    <a href="#" class="proximamente">Episodio 8 - Próximamente</a>
+                    <br> <span class="guion">Próximamente</span>
+                </li>
+                <li data-season="3">
+                    <a href="#" class="proximamente">Episodio 9 - Próximamente</a>
+                    <br> <span class="guion">Próximamente</span>
                 </li>
             </ul>
         </section>
     </main>
     <footer>
+        <ul class="socialmf">
+            <li><a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a></li>
+            <li><a href="#" aria-label="TikTok"><i class="fab fa-tiktok"></i></a></li>
+            <li><a href="#" aria-label="Telegram"><i class="fab fa-telegram"></i></a></li>
+        </ul>
         <p>&copy; 2025 Historias Cortas & Chisme. All rights reserved.</p>
     </footer>
+    <!-- Font Awesome for social icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="script.js"></script>
     
 </body>

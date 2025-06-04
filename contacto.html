@@ -11,31 +11,67 @@
     <header>
         <nav>
             <ul>
-                <li><a href="/guion/index.html">Inicio</a></li>
-                <li><a href="/guion/us.html">Acerca</a></li>
+                <li><a href="index.html">Inicio</a></li>
+                <li><a href="us.html">Acerca</a></li>
                 <li><a href="#" class="active">Contacto</a></li>
             </ul>
         </nav>
     </header>
     <main>
         <section>
-            <h1>Contacto</h1>
-            <form action="">
-                <label for="name">Nombre</label>
-                <input type="text" id="name" name="name">
-                <label for="email">Email</label>
-                <input type="email" id="email" name="email">
-                <label for="phone">Telefono</label>
-                <input type="tel" id="phone" name="phone">
-                <label for="message">Mensaje</label>
-                <textarea id="message" name="message"></textarea>
-                <button type="submit">Enviar</button>
+            <h1>Que esperas? envíanos un mensaje</h1>
+            <form id="contactForm" novalidate>
+                <div class="form-group">
+                    <label for="name">Nombre *</label>
+                    <input type="text" id="name" name="name" required 
+                           minlength="2" maxlength="50"
+                           pattern="[A-Za-zÁÉÍÓÚáéíóúñÑ ]+"
+                           title="Por favor ingresa solo letras y espacios">
+                    <span class="error-message" id="name-error"></span>
+                </div>
+
+                <div class="form-group">
+                    <label for="email">Email *</label>
+                    <input type="email" id="email" name="email" required
+                           pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$">
+                    <span class="error-message" id="email-error"></span>
+                </div>
+
+                <div class="form-group">
+                    <label for="phone">Teléfono *</label>
+                    <input type="tel" id="phone" name="phone" required
+                           pattern="[0-9]{10,15}"
+                           title="Por favor ingresa un número de teléfono válido (10-15 dígitos)">
+                    <span class="error-message" id="phone-error"></span>
+                </div>
+
+                <div class="form-group">
+                    <label for="message">Mensaje *</label>
+                    <textarea id="message" name="message" required
+                             minlength="10" maxlength="1000"></textarea>
+                    <span class="error-message" id="message-error"></span>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="submit-btn">Enviar mensaje</button>
+                </div>
+                <div id="form-success" class="success-message" style="display: none;">
+                    ¡Mensaje enviado con éxito! Nos pondremos en contacto contigo pronto.
+                </div>
             </form>
         </section>
     </main>
     <footer>
+        <ul class="socialmf">
+            <li><a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a></li>
+            <li><a href="#" aria-label="TikTok"><i class="fab fa-tiktok"></i></a></li>
+            <li><a href="#" aria-label="Telegram"><i class="fab fa-telegram"></i></a></li>
+        </ul>
         <p>&copy; 2025 Historias Cortas & Chisme. All rights reserved.</p>
     </footer>
+    <!-- Font Awesome for social icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="contact-form.js"></script>
     <script src="script.js"></script>
     
 </body>
