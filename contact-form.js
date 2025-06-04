@@ -29,17 +29,137 @@ function createConfetti() {
     }, 3000);
 }
 
-document.addEventListener('DOMContentLoaded', function() {
-    const form = document.getElementById('contactForm');
+// Función para mostrar el mensaje de éxito
+function showSuccessMessage() {
     const formSuccess = document.getElementById('form-success');
-    const submitBtn = form.querySelector('button[type="submit"]');
-    const originalBtnText = submitBtn.innerHTML;
+    if (!formSuccess) {
+        console.error('No se encontró el elemento form-success');
+        return;
+    }
+    
+    console.log('Mostrando mensaje de éxito...');
+    formSuccess.style.display = 'block';
+    void formSuccess.offsetHeight; // Forzar reflow
+    formSuccess.classList.add('show');
+    
+    console.log('Clases del mensaje de éxito:', formSuccess.className);
+    
+    // Desplazarse al mensaje
+    setTimeout(() => {
+        formSuccess.scrollIntoView({
+            behavior: 'smooth',
+            block: 'start'
+        });
+    }, 100);
+    
+    // Ocultar después de 5 segundos
+    setTimeout(() => {
+        formSuccess.classList.remove('show');
+        setTimeout(() => {
+            formSuccess.style.display = 'none';
+        }, 400);
+    }, 5000);
+}
 
+// Función para validar un campo individual
+function validateField(field) {
+    if (!field) return false;
+    
+    const value = field.value.trim();
+    const errorElement = document.getElementById(`${field.id}-error`);
+    const formGroup = field.closest ? field.closest('.form-group') : null;
+    
+    // Limpiar estado previo
+    if (field.classList) {
+        field.classList.remove('invalid', 'shake');
+    }
+    
+    if (formGroup && formGroup.classList) {
+        formGroup.classList.remove('invalid', 'valid');
+    }
+    
+    // Si el campo está vacío y no es requerido, no mostrar error
+    if (!value && !field.required) {
+        return true;
+    }
+    
+    // Validar según el tipo de campo
+    let isValid = true;
+    let errorMessage = '';
+    
+    if (field.required && !value) {
+        isValid = false;
+        errorMessage = 'Este campo es obligatorio';
+    } else if (field.type === 'email' && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
+        isValid = false;
+        errorMessage = 'Por favor ingresa un correo electrónico válido';
+    } else if (field.type === 'tel' && !/^\d{10,15}$/.test(value)) {
+        isValid = false;
+        errorMessage = 'Por favor ingresa un número de teléfono válido (10-15 dígitos)';
+    } else if (field.pattern && !new RegExp(field.pattern).test(value)) {
+        isValid = false;
+        errorMessage = field.title || 'El formato no es válido';
+    }
+    
+    // Mostrar u ocultar mensaje de error
+    if (errorElement) {
+        if (!isValid) {
+            errorElement.textContent = errorMessage;
+            errorElement.style.opacity = '1';
+            errorElement.style.height = 'auto';
+            errorElement.style.marginTop = '0.5rem';
+        } else {
+            errorElement.style.opacity = '0';
+            errorElement.style.height = '0';
+            errorElement.style.marginTop = '0';
+            setTimeout(() => {
+                errorElement.textContent = '';
+            }, 300);
+        }
+    }
+    
+    // Agregar clases de validación
+    if (formGroup) {
+        if (isValid) {
+            formGroup.classList.add('valid');
+            formGroup.classList.remove('invalid');
+        } else {
+            formGroup.classList.add('invalid');
+            formGroup.classList.remove('valid');
+            field.classList.add('shake');
+        }
+    }
+    
+    return isValid;
+}
+
+// Inicialización cuando el DOM está listo
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('DOM cargado, inicializando formulario...');
+    const form = document.getElementById('contactForm');
+    if (!form) {
+        console.error('No se encontró el formulario con ID contactForm');
+        return;
+    }
+    
+    const formSuccess = document.getElementById('form-success');
+    console.log('Elemento form-success encontrado:', formSuccess);
+    
+    const submitBtn = form.querySelector('button[type="submit"]');
+    const originalBtnText = submitBtn ? submitBtn.innerHTML : '';
+    
+    // Verificar si se mostró el mensaje de éxito desde la URL
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('enviado') === 'true') {
+        console.log('Redirección de éxito detectada, mostrando mensaje...');
+        showSuccessMessage();
+    }
+    
     // Validación en tiempo real
     form.addEventListener('input', function(event) {
         validateField(event.target);
     });
-
+    
     // Validación al enviar el formulario
     form.addEventListener('submit', async function(event) {
         event.preventDefault();
@@ -77,39 +197,19 @@ document.addEventListener('DOMContentLoaded', function() {
                 });
 
                 if (response.ok) {
+                    console.log('Formulario enviado exitosamente');
                     // Resetear el formulario
                     form.reset();
                     
                     // Mostrar mensaje de éxito
-                    formSuccess.style.display = 'block';
-                    // Forzar reflow
-                    void formSuccess.offsetHeight;
-                    formSuccess.classList.add('show');
+                    showSuccessMessage();
                     
                     // Mostrar confeti
                     createConfetti();
                     
-                    // Desplazarse al mensaje de éxito
-                    setTimeout(() => {
-                        formSuccess.scrollIntoView({
-                            behavior: 'smooth',
-                            block: 'start'
-                        });
-                    }, 100);
+                    // Actualizar la URL sin recargar la página
+                    window.history.pushState({}, '', 'contacto.html?enviado=true');
                     
-                    // Ocultar mensaje después de 5 segundos
-                    setTimeout(() => {
-                        formSuccess.classList.remove('show');
-                        setTimeout(() => {
-                            formSuccess.style.display = 'none';
-                        }, 400);
-                    }, 5000);
-                    
-                    // Redirigir si se especificó una página de agradecimiento
-                    const nextPage = form.querySelector('input[name="_next"]');
-                    if (nextPage && nextPage.value) {
-                        window.location.href = nextPage.value;
-                    }
                 } else {
                     throw new Error('Error al enviar el formulario');
                 }
@@ -125,104 +225,25 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }
     });
+});
 
-    // Función para validar un campo individual
-    function validateField(field) {
-        if (!field) return false;
-        
-        const value = field.value.trim();
-        const errorElement = document.getElementById(`${field.id}-error`);
-        const formGroup = field.closest ? field.closest('.form-group') : null;
-        
-        // Limpiar estado previo
-        if (field.classList) {
-            field.classList.remove('invalid', 'shake');
-        }
-        
-        if (formGroup && formGroup.classList) {
-            formGroup.classList.remove('invalid', 'valid');
-        }
-        
-        // Si el campo está vacío y no es requerido, no mostrar error
-        if (!value && !field.required) {
-            return true;
-        }
-        
-        // Validar campo vacío
-        if (field.required && !value) {
-            showError(field, errorElement, 'Este campo es obligatorio');
-            field.classList.add('shake');
-            return false;
-        }
-        
-        // Validar según el tipo de campo
-        let isValid = true;
-        
-        if (field.type === 'email' && value) {
-            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            if (!emailRegex.test(value)) {
-                showError(field, errorElement, 'Por favor ingresa un correo electrónico válido');
-                isValid = false;
-            }
-        } else if (field.type === 'tel' && value) {
-            const phoneRegex = /^[0-9]{10,15}$/;
-            if (!phoneRegex.test(value)) {
-                showError(field, errorElement, 'El teléfono debe tener entre 10 y 15 dígitos');
-                isValid = false;
-            }
-        } else if (field.type === 'text' && field.id === 'name' && value) {
-            const nameRegex = /^[A-Za-zÁÉÍÓÚáéíóúñÑ\s]+$/;
-            if (!nameRegex.test(value)) {
-                showError(field, errorElement, 'Por favor ingresa solo letras y espacios');
-                isValid = false;
-            }
-        } else if (field.type === 'textarea' && value) {
-            if (value.length < 10) {
-                showError(field, errorElement, 'El mensaje debe tener al menos 10 caracteres');
-                isValid = false;
-            }
-        }
-        
-        // Si el campo es válido, marcarlo como tal
-        if (isValid) {
-            formGroup.classList.add('valid');
-            formGroup.classList.remove('invalid');
-            if (errorElement) {
-                errorElement.style.opacity = '0';
-                errorElement.style.height = '0';
-                errorElement.style.marginTop = '0';
-                setTimeout(() => {
-                    errorElement.textContent = '';
-                }, 300);
-            }
-            return true;
-        } else {
-            formGroup.classList.add('invalid');
-            formGroup.classList.remove('valid');
-            field.classList.add('shake');
-            return false;
-        }
-    }
-
-    // Función para mostrar errores
-    function showError(field, errorElement, message) {
-        if (errorElement) {
-            errorElement.textContent = message;
-            errorElement.style.opacity = '1';
-            errorElement.style.height = 'auto';
-            errorElement.style.marginTop = '0.5rem';
-        }
-    }
-
-    // Verificar si se mostró el mensaje de éxito desde la URL
+// Verificar si se mostró el mensaje de éxito desde la URL (al cargar la página)
+const checkSuccessParam = () => {
     const urlParams = new URLSearchParams(window.location.search);
     if (urlParams.get('enviado') === 'true') {
-        const successMessage = document.createElement('div');
-        successMessage.className = 'success-message';
-        successMessage.textContent = '¡Mensaje enviado con éxito! Nos pondremos en contacto contigo pronto.';
-        form.parentNode.insertBefore(successMessage, form.nextSibling);
-        
-        // Limpiar el parámetro de la URL sin recargar la página
-        window.history.replaceState({}, document.title, window.location.pathname);
+        console.log('Redirección de éxito detectada al cargar la página');
+        // Esperar a que el DOM esté completamente cargado
+        if (document.readyState === 'complete') {
+            showSuccessMessage();
+        } else {
+            document.addEventListener('DOMContentLoaded', showSuccessMessage);
+        }
     }
-});
+};
+
+// Ejecutar la verificación al cargar la página
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', checkSuccessParam);
+} else {
+    checkSuccessParam();
+}
