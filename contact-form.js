@@ -77,26 +77,32 @@ document.addEventListener('DOMContentLoaded', function() {
                 });
 
                 if (response.ok) {
-                    // Mostrar mensaje de éxito y confeti
-                    formSuccess.style.display = 'block';
+                    // Resetear el formulario
                     form.reset();
+                    
+                    // Mostrar mensaje de éxito
+                    formSuccess.style.display = 'block';
+                    // Forzar reflow
+                    void formSuccess.offsetHeight;
+                    formSuccess.classList.add('show');
+                    
+                    // Mostrar confeti
                     createConfetti();
                     
-                    // Desplazarse suavemente al inicio del formulario
-                    window.scrollTo({
-                        top: form.offsetTop - 50,
-                        behavior: 'smooth'
-                    });
+                    // Desplazarse al mensaje de éxito
+                    setTimeout(() => {
+                        formSuccess.scrollIntoView({
+                            behavior: 'smooth',
+                            block: 'start'
+                        });
+                    }, 100);
                     
                     // Ocultar mensaje después de 5 segundos
                     setTimeout(() => {
-                        formSuccess.style.opacity = '0';
-                        formSuccess.style.transform = 'translateY(-10px)';
+                        formSuccess.classList.remove('show');
                         setTimeout(() => {
                             formSuccess.style.display = 'none';
-                            formSuccess.style.opacity = '';
-                            formSuccess.style.transform = '';
-                        }, 300);
+                        }, 400);
                     }, 5000);
                     
                     // Redirigir si se especificó una página de agradecimiento
