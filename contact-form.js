@@ -1,32 +1,99 @@
-// Función para crear confeti
-function createConfetti() {
-    const colors = ['#ef4444', '#3b82f6', '#10b981', '#f59e0b', '#8b5cf6'];
-    const container = document.createElement('div');
-    container.style.position = 'fixed';
-    container.style.top = '0';
-    container.style.left = '0';
-    container.style.width = '100%';
-    container.style.height = '100%';
-    container.style.pointerEvents = 'none';
-    container.style.zIndex = '1000';
+// Función para crear efecto de pantalla rota y cortocircuito
+function createGlitchEffect() {
+    // Crear contenedor principal
+    const glitchContainer = document.createElement('div');
+    glitchContainer.className = 'glitch-container';
     
-    for (let i = 0; i < 100; i++) {
-        const confetti = document.createElement('div');
-        confetti.className = 'confetti';
-        confetti.style.left = Math.random() * 100 + 'vw';
-        confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
-        confetti.style.width = Math.random() * 10 + 5 + 'px';
-        confetti.style.height = Math.random() * 10 + 5 + 'px';
-        confetti.style.animationDuration = (Math.random() * 3 + 2) + 's';
-        container.appendChild(confetti);
+    // Crear capas de glitch
+    for (let i = 0; i < 3; i++) {
+        const layer = document.createElement('div');
+        layer.className = 'glitch-layer';
+        // Tomar captura de pantalla del viewport actual
+        layer.style.backgroundImage = `url(${takeScreenshot()})`;
+        glitchContainer.appendChild(layer);
     }
     
-    document.body.appendChild(container);
+    // Crear efecto de cortocircuito
+    const circuitOverlay = document.createElement('div');
+    circuitOverlay.className = 'circuit-overlay';
     
-    // Eliminar el contenedor después de la animación
+    // Crear efecto de ruido
+    const noiseOverlay = document.createElement('div');
+    noiseOverlay.className = 'noise';
+    
+    // Añadir todo al body
+    document.body.appendChild(glitchContainer);
+    document.body.appendChild(circuitOverlay);
+    document.body.appendChild(noiseOverlay);
+    
+    // Activar efectos
     setTimeout(() => {
-        container.remove();
-    }, 3000);
+        glitchContainer.classList.add('active');
+        circuitOverlay.classList.add('active');
+        noiseOverlay.classList.add('active');
+        
+        // Reproducir sonido de estática (opcional)
+        playStaticSound();
+        
+        // Desactivar efectos después de 4 segundos (antes eran 2 segundos)
+        setTimeout(() => {
+            glitchContainer.classList.remove('active');
+            circuitOverlay.classList.remove('active');
+            noiseOverlay.classList.remove('active');
+            
+            // Eliminar elementos después de la animación
+            setTimeout(() => {
+                glitchContainer.remove();
+                circuitOverlay.remove();
+                noiseOverlay.remove();
+            }, 2000); // Aumentado de 1s a 2s
+        }, 4000); // Aumentado de 2s a 4s
+    }, 100);
+}
+
+// Función para tomar captura de pantalla (simulada)
+function takeScreenshot() {
+    // En un entorno real, podrías usar html2canvas o una librería similar
+    // Para este ejemplo, devolvemos una cadena vacía
+    return '';
+}
+
+// Función para reproducir sonido de estática
+function playStaticSound() {
+    // Crear contexto de audio
+    const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+    
+    // Configurar para 4 segundos de estática
+    const bufferSize = 4 * audioContext.sampleRate;
+    const noiseBuffer = audioContext.createBuffer(1, bufferSize, audioContext.sampleRate);
+    const output = noiseBuffer.getChannelData(0);
+    
+    // Generar ruido blanco
+    for (let i = 0; i < bufferSize; i++) {
+        output[i] = Math.random() * 2 - 1;
+    }
+    
+    // Crear fuente de audio
+    const noise = audioContext.createBufferSource();
+    noise.buffer = noiseBuffer;
+    
+    // Crear filtro para simular estática
+    const filter = audioContext.createBiquadFilter();
+    filter.type = 'bandpass';
+    filter.frequency.value = 1000;
+    filter.Q.value = 0.5;
+    
+    // Conectar nodos
+    noise.connect(filter);
+    filter.connect(audioContext.destination);
+    
+    // Reproducir estática
+    noise.start(0);
+    
+    // Detener después de 4 segundos
+    setTimeout(() => {
+        noise.stop();
+    }, 4000);
 }
 
 // Función para mostrar el mensaje de éxito
@@ -204,8 +271,8 @@ document.addEventListener('DOMContentLoaded', function() {
                     // Mostrar mensaje de éxito
                     showSuccessMessage();
                     
-                    // Mostrar confeti
-                    createConfetti();
+                    // Mostrar efecto de pantalla rota
+                    createGlitchEffect();
                     
                     // Actualizar la URL sin recargar la página
                     window.history.pushState({}, '', 'contacto.html?enviado=true');
@@ -246,4 +313,48 @@ if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', checkSuccessParam);
 } else {
     checkSuccessParam();
+}
+
+// Función para inicializar el botón de efecto especial
+function initGlitchButton() {
+    console.log('Inicializando botón de efecto especial...');
+    const glitchButton = document.getElementById('glitchButton');
+    
+    if (!glitchButton) {
+        console.error('No se encontró el botón de efecto especial');
+        return;
+    }
+    
+    console.log('Botón encontrado, agregando evento click...');
+    
+    glitchButton.addEventListener('click', function(e) {
+        e.preventDefault();
+        console.log('Botón clickeado, creando efecto...');
+        
+        // Crear y activar el efecto
+        createGlitchEffect();
+        
+        // Agregar clase para feedback visual
+        this.classList.add('active');
+        
+        // Deshabilitar temporalmente el botón para evitar múltiples clics
+        this.disabled = true;
+        
+        // Remover la clase y reactivar el botón después de la animación
+        setTimeout(() => {
+            this.classList.remove('active');
+            this.disabled = false;
+        }, 5000); // Tiempo suficiente para que termine la animación
+    });
+}
+
+// Inicializar el botón cuando el DOM esté listo
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', function() {
+        checkSuccessParam();
+        initGlitchButton();
+    });
+} else {
+    checkSuccessParam();
+    initGlitchButton();
 }

@@ -73,8 +73,70 @@
     </footer>
     <!-- Font Awesome for social icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Botón de efecto especial -->
+    <button id="glitchButton" class="glitch-button">
+        <span class="glitch-text">ACTIVAR EFECTO</span>
+        <span class="glitch-layers">
+            <span class="glitch-layer"></span>
+            <span class="glitch-layer"></span>
+            <span class="glitch-layer"></span>
+        </span>
+    </button>
+    
+    <style>
+        .glitch-button {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            padding: 15px 30px;
+            background: #000;
+            color: #0f0;
+            border: 2px solid #0f0;
+            border-radius: 5px;
+            font-family: 'Courier New', monospace;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            overflow: hidden;
+            z-index: 9999;
+            transition: all 0.3s;
+        }
+        
+        .glitch-button:hover {
+            background: #0f0;
+            color: #000;
+            box-shadow: 0 0 10px #0f0, 0 0 20px #0f0;
+        }
+        
+        .glitch-text {
+            position: relative;
+            z-index: 2;
+        }
+        
+        .glitch-layers {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+        
+        .glitch-layer {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: transparent;
+            pointer-events: none;
+        }
+    </style>
+    
+    
+    <!-- Scripts al final del body para asegurar que el DOM esté cargado -->
     <script src="contact-form.js"></script>
     <script src="script.js"></script>
-    
 </body>
 </html>
