@@ -261,6 +261,8 @@ form {
     max-width: 600px;
     margin: 0 auto;
     padding: 1.5rem;
+    position: relative;
+    transition: all 0.3s ease;
 }
 
 .form-group {
@@ -279,11 +281,51 @@ input[type="email"],
 input[type="tel"],
 textarea {
     width: 100%;
-    padding: 0.75rem;
+    padding: 0.75rem 2.5rem 0.75rem 0.75rem;
     border: 2px solid var(--gray-300);
     border-radius: var(--radius);
     font-size: 1rem;
-    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    transition: all 0.3s ease;
+    background-position: right 0.75rem center;
+    background-repeat: no-repeat;
+    background-size: 1.25rem;
+}
+
+input[type="text"]:focus,
+input[type="email"]:focus,
+input[type="tel"]:focus,
+textarea:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.2);
+    outline: none;
+}
+
+/* Iconos de validación */
+.form-group {
+    position: relative;
+}
+
+.form-group::after {
+    content: '';
+    position: absolute;
+    right: 0.75rem;
+    top: 2.5rem;
+    width: 1.25rem;
+    height: 1.25rem;
+    background-size: contain;
+    background-repeat: no-repeat;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.form-group.valid::after {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%2322c55e'%3E%3Cpath d='M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z'/%3E%3C/svg%3E");
+    opacity: 1;
+}
+
+.form-group.invalid::after {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23ef4444'%3E%3Cpath d='M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z'/%3E%3C/svg%3E");
+    opacity: 1;
 }
 
 textarea {
@@ -317,34 +359,101 @@ textarea.invalid {
 }
 
 .submit-btn {
-    background-color: var(--primary);
+    position: relative;
+    background-color: var(--primary-color);
     color: white;
+    padding: 0.75rem 2.5rem 0.75rem 1.5rem;
     border: none;
-    padding: 0.75rem 2rem;
     border-radius: var(--radius);
+    cursor: pointer;
     font-size: 1rem;
     font-weight: 500;
-    cursor: pointer;
-    transition: background-color 0.3s ease, transform 0.2s ease;
+    transition: all 0.3s ease;
+    overflow: hidden;
 }
 
 .submit-btn:hover {
-    background-color: var(--primary-dark);
+    background-color: #4338ca;
     transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
 .submit-btn:active {
     transform: translateY(0);
 }
 
+.submit-btn::after {
+    content: '→';
+    position: absolute;
+    right: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    transition: transform 0.3s ease;
+}
+
+.submit-btn:hover::after {
+    transform: translate(4px, -50%);
+}
+
+/* Spinner de carga */
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+.submit-btn.loading {
+    padding-right: 3rem;
+    pointer-events: none;
+}
+
+.submit-btn.loading::after {
+    content: '';
+    width: 1.25rem;
+    height: 1.25rem;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    border-top-color: white;
+    animation: spin 0.8s ease-in-out infinite;
+    right: 0.75rem;
+    transform: translateY(-50%) rotate(0deg);
+}
+
+/* Animación de confeti */
+@keyframes confetti-slow {
+    0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+    100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
+}
+
+.confetti {
+    position: fixed;
+    width: 10px;
+    height: 10px;
+    background-color: #f00;
+    opacity: 0;
+    animation: confetti-slow 3s ease-in-out forwards;
+    z-index: 1000;
+    pointer-events: none;
+}
+
+/* Mensajes de éxito */
 .success-message {
-    background-color: #2ecc71;
-    color: white;
-    padding: 1rem;
+    background-color: #d1fae5;
+    color: #065f46;
+    padding: 1rem 1rem 1rem 3rem;
     border-radius: var(--radius);
-    margin-top: 1.5rem;
-    text-align: center;
-    animation: fadeIn 0.3s ease;
+    margin-bottom: 1.5rem;
+    display: none;
+    position: relative;
+    border-left: 4px solid #10b981;
+    animation: fadeIn 0.5s ease-out;
+}
+
+.success-message::before {
+    content: '✓';
+    position: absolute;
+    left: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 1.25rem;
 }
 
 @keyframes fadeIn {

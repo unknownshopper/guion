@@ -20,7 +20,7 @@
     <main>
         <section>
             <h1>Que esperas? envíanos un mensaje</h1>
-            <form id="contactForm" novalidate>
+            <form id="contactForm" action="https://formspree.io/f/xvgrgzln" method="POST" novalidate>
                 <div class="form-group">
                     <label for="name">Nombre *</label>
                     <input type="text" id="name" name="name" required 
@@ -33,7 +33,7 @@
                 <div class="form-group">
                     <label for="email">Email *</label>
                     <input type="email" id="email" name="email" required
-                           pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$">
+                           pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}">
                     <span class="error-message" id="email-error"></span>
                 </div>
 
@@ -55,6 +55,8 @@
                 <div class="form-actions">
                     <button type="submit" class="submit-btn">Enviar mensaje</button>
                 </div>
+                <input type="hidden" name="_next" value="contacto.html?enviado=true">
+                <input type="text" name="_gotcha" style="display:none">
                 <div id="form-success" class="success-message" style="display: none;">
                     ¡Mensaje enviado con éxito! Nos pondremos en contacto contigo pronto.
                 </div>
